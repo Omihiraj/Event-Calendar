@@ -45,7 +45,7 @@ class _AddEventState extends State<AddEvent> {
                     TextFormField(
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(),
-                        hintText: 'Enter your event title',
+                        hintText: 'Enter event title',
                       ),
                       validator: (value) {
                         if (value!.isEmpty) {
