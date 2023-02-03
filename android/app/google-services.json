@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "844397548148",
+    "project_id": "event-calendar-1d456",
+    "storage_bucket": "event-calendar-1d456.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:844397548148:android:241bcc917bc73651caf721",
+        "android_client_info": {
+          "package_name": "com.example.event_calendar"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "844397548148-14d62g33s3pb768u3tqn64njqo3omen0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCQSRbn3L7q55JKabceZl2YG4q8cthoSBM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "844397548148-14d62g33s3pb768u3tqn64njqo3omen0.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "844397548148-lkk8a8ut4ddlc27ledsaolcmeqg7na4f.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.eventCalendar"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
