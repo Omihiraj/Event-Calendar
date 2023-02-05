@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
 import '../models/event.dart';
 import '../services/firebase_service.dart';
@@ -38,34 +39,16 @@ class _HomePageState extends State<HomePage> {
         children: [
           Container(
               padding: const EdgeInsets.all(10),
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                        "Today : ${today.year} - ${today.month} - ${today.day}"),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 15, vertical: 10),
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10.0),
-                          color: Colors.amber),
-                      child: Row(
-                        children: const [
-                          Text(
-                            "Add New Event",
-                            style: TextStyle(color: Colors.white),
-                          ),
-                          SizedBox(
-                            width: 5,
-                          ),
-                          Icon(
-                            Icons.add_circle_outline,
-                            color: Colors.white,
-                          )
-                        ],
-                      ),
-                    )
-                  ])),
+              height: 50,
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                children: [
+                  holidayView('Poya Day', Colors.greenAccent),
+                  holidayView('Bank Holiday', Colors.amberAccent),
+                  holidayView('Merchantile Day', Colors.redAccent),
+                  holidayView('Poya Day', Colors.blueAccent)
+                ],
+              )),
           Container(
             margin: const EdgeInsets.only(top: 10.0),
             height: 100,
@@ -129,7 +112,7 @@ class _HomePageState extends State<HomePage> {
           const SizedBox(height: 15),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 5),
-            height: 500,
+            height: 300,
             width: double.infinity,
             child: StreamBuilder<List<Event>>(
               stream: FireService.getEvents(),
@@ -185,10 +168,32 @@ class _HomePageState extends State<HomePage> {
 
   Color checkColor(int colorIndex) {
     if (colorIndex == 1) {
-      return Colors.amber;
+      return Colors.greenAccent;
     } else if (colorIndex == 2) {
-      return Colors.redAccent;
+      return Colors.blueAccent;
+    } else if (colorIndex == 3) {
+      return Colors.amber;
     }
-    return Colors.greenAccent;
+    return Colors.redAccent;
+  }
+
+  Widget holidayView(String holiday, Color color) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: Row(
+        children: [
+          Container(
+            width: 15,
+            height: 15,
+            decoration: BoxDecoration(
+                color: color, borderRadius: BorderRadius.circular(20)),
+          ),
+          const SizedBox(
+            width: 5,
+          ),
+          Text(holiday)
+        ],
+      ),
+    );
   }
 }

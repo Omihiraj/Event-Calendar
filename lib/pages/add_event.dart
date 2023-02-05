@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:event_calendar/services/fcm_service.dart';
 import 'package:flutter/material.dart';
 
-import '../constants/constants.dart';
+import '../services/firebase_service.dart';
 
 class AddEvent extends StatefulWidget {
   const AddEvent({super.key});
@@ -11,6 +13,7 @@ class AddEvent extends StatefulWidget {
 
 class _AddEventState extends State<AddEvent> {
   final _formKey = GlobalKey<FormState>();
+  String token = '';
   String startTime = "hh:mm";
   String endTime = "hh:mm";
   String startDate = "yyyy/mm/dd";
@@ -18,6 +21,7 @@ class _AddEventState extends State<AddEvent> {
   TimeOfDay sTime = TimeOfDay.now();
   TimeOfDay eTime = TimeOfDay.now();
   DateTime sDate = DateTime.now();
+
   String dropdownValue = "15 minutes early";
   int statusNo = 0;
   List<String> list = <String>[
@@ -25,6 +29,9 @@ class _AddEventState extends State<AddEvent> {
     '01 hour early',
     '01 day early',
   ];
+  TextEditingController title = TextEditingController();
+  TextEditingController note = TextEditingController();
+
   int colorIndex = 0;
 
   @override
@@ -43,6 +50,7 @@ class _AddEventState extends State<AddEvent> {
                   children: <Widget>[
                     const Text('Title'),
                     TextFormField(
+                      controller: title,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(),
                         hintText: 'Enter event title',
@@ -59,6 +67,7 @@ class _AddEventState extends State<AddEvent> {
                     ),
                     const Text('Note'),
                     TextFormField(
+                      controller: note,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(),
                         hintText: 'Enter your note',
@@ -191,33 +200,99 @@ class _AddEventState extends State<AddEvent> {
                     const SizedBox(
                       height: 15,
                     ),
-                    const Text("Status", style: TextStyle(color: primaryColor)),
-                    DropdownButton<String>(
-                      underline: Container(),
-                      value: dropdownValue,
-                      onChanged: (String? value) {
-                        // This is called when the user selects an item.
-                        setState(() {
-                          dropdownValue = value!;
-                          if (dropdownValue == "15 minutes early") {
-                            statusNo = 0;
-                          } else if (dropdownValue == "01 hour early") {
-                            statusNo = 1;
-                          } else if (dropdownValue == "01 day early") {
-                            statusNo = 2;
-                          }
-                        });
-                      },
-                      items: list.map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
+                    const Text("Status"),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        DropdownButton<String>(
+                          underline: Container(),
+                          value: dropdownValue,
+                          onChanged: (String? value) {
+                            // This is called when the user selects an item.
+                            setState(() {
+                              dropdownValue = value!;
+                              if (dropdownValue == "15 minutes early") {
+                                statusNo = 0;
+                              } else if (dropdownValue == "01 hour early") {
+                                statusNo = 1;
+                              } else if (dropdownValue == "01 day early") {
+                                statusNo = 2;
+                              }
+                            });
+                          },
+                          items: list
+                              .map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
+                        ),
+                        InkWell(
+                          onTap: () async {
+                            TimeOfDay? newTime = await showTimePicker(
+                              context: context,
+                              initialTime: sTime,
+                            );
+                            if (newTime == null) return;
+                            setState(() {
+                              sTime = newTime;
+                              String hour =
+                                  sTime.hour.toString().padLeft(2, "0");
+                              String minute =
+                                  sTime.minute.toString().padLeft(2, "0");
+                              startTime = "$hour:$minute";
+                            });
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 10),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(color: Colors.amber)),
+                            child: Row(
+                              children: [
+                                Text(startTime),
+                                const SizedBox(width: 5),
+                                const Icon(
+                                  Icons.access_time_outlined,
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                     InkWell(
                       onTap: () {
-                        if (_formKey.currentState!.validate()) {}
+                        if (_formKey.currentState!.validate()) {
+                          // FireService.addEvent(
+                          //     context: context,
+                          //     title: title.text,
+                          //     note: note.text,
+                          //     colorIndex: colorIndex,
+                          //     stime: Timestamp.fromDate(DateTime(
+                          //         sDate.year,
+                          //         sDate.month,
+                          //         sDate.day,
+                          //         sTime.hour,
+                          //         sTime.minute)),
+                          //     etime: Timestamp.fromDate(DateTime(
+                          //         sDate.year,
+                          //         sDate.month,
+                          //         sDate.day,
+                          //         eTime.hour,
+                          //         eTime.minute)));
+
+                          FireService.getToken().then((String t) {
+                            setState(() {
+                              token = t;
+                            });
+                          });
+
+                          FCMService.sendPushMessage(
+                              token: token, title: 'title', note: 'note');
+                        }
                       },
                       child: Container(
                         padding: const EdgeInsets.all(10),

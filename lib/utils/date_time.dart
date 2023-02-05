@@ -23,8 +23,8 @@ const List months = [
 ];
 
 List<dynamic> getDate() {
-  int tommorow = now.day + 1;
-  int i = tommorow;
+  int today = now.day;
+  int i = today;
   int j = 0;
   while (day.length < 30) {
     day.add(i);
