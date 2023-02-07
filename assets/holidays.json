@@ -1,0 +1,16 @@
+{
+    "holidays":[
+        {
+            "date":"2023-02-07",
+            "type":1,
+            "holiday":"Duruthu Poya"
+        },
+    
+        {
+            "date":"2023-02-10",
+            "type":2,
+            "holiday":"Bank Holiday"
+        }
+       
+    ]
+}

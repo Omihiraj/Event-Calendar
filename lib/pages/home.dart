@@ -1,7 +1,7 @@
+import 'package:event_calendar/services/holidays_api.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-
 import '../models/event.dart';
+import '../models/holiday.dart';
 import '../services/firebase_service.dart';
 import '../utils/date_time.dart';
 
@@ -17,13 +17,17 @@ class _HomePageState extends State<HomePage> {
   DateTime currentDate = DateTime.now();
   String selectDate = "";
   String time = "";
-  List<int> datesNo = getDate()[0];
-  List<String> datesName = getDate()[1];
-  List<String> monthNames = getDate()[2];
 
-  String slotDay = getDate()[1][0];
-  String monthName = getDate()[2][0];
-  List<int> monthNo = getDate()[3];
+  List<int> datesNo = [];
+  List<String> datesName = [];
+  List<String> monthNames = [];
+
+  List<int> holidayType = [];
+  List<String> holidayName = [];
+
+  String slotDay = "";
+  String monthName = "";
+  List<int> monthNo = [];
   String timeSlot = "";
   int dateItemIndex = 0;
   int? slotItemIndex;
@@ -32,6 +36,31 @@ class _HomePageState extends State<HomePage> {
   DateTime? nowDate;
   int dateNo = DateTime.now().weekday;
   bool isChecked = false;
+  List<Holiday>? holidays;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+
+    super.initState();
+    HolidayApi.readJson().then((value) {
+      return value;
+    }).then((value) {
+      setState(() {
+        List fullCalendar = DateCalendar.getDate(value);
+        datesNo = fullCalendar[0];
+        datesName = fullCalendar[1];
+        monthNames = fullCalendar[2];
+        slotDay = fullCalendar[1][0];
+        monthName = fullCalendar[2][0];
+        monthNo = fullCalendar[3];
+
+        holidayType = fullCalendar[4];
+        holidayName = fullCalendar[5];
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -72,7 +101,7 @@ class _HomePageState extends State<HomePage> {
                           borderRadius: BorderRadius.circular(15.0),
                           color: dateItemIndex == index
                               ? Colors.amber
-                              : Colors.white),
+                              : calendarColorCheck(holidayType[index])),
                       margin: const EdgeInsets.only(left: 10.0),
                       height: 100,
                       width: 100,
@@ -164,6 +193,17 @@ class _HomePageState extends State<HomePage> {
             'End time : ${event.etime.toDate().hour.toString().padLeft(2, '0')} : ${event.etime.toDate().minute.toString().padLeft(2, '0')}')
       ]),
     );
+  }
+
+  Color calendarColorCheck(int colorIndex) {
+    if (colorIndex == 1) {
+      return Colors.greenAccent;
+    } else if (colorIndex == 2) {
+      return Colors.blueAccent;
+    } else if (colorIndex == 3) {
+      return Colors.amber;
+    }
+    return Colors.white;
   }
 
   Color checkColor(int colorIndex) {

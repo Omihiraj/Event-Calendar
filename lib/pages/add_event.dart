@@ -266,23 +266,23 @@ class _AddEventState extends State<AddEvent> {
                     InkWell(
                       onTap: () {
                         if (_formKey.currentState!.validate()) {
-                          // FireService.addEvent(
-                          //     context: context,
-                          //     title: title.text,
-                          //     note: note.text,
-                          //     colorIndex: colorIndex,
-                          //     stime: Timestamp.fromDate(DateTime(
-                          //         sDate.year,
-                          //         sDate.month,
-                          //         sDate.day,
-                          //         sTime.hour,
-                          //         sTime.minute)),
-                          //     etime: Timestamp.fromDate(DateTime(
-                          //         sDate.year,
-                          //         sDate.month,
-                          //         sDate.day,
-                          //         eTime.hour,
-                          //         eTime.minute)));
+                          FireService.addEvent(
+                              context: context,
+                              title: title.text,
+                              note: note.text,
+                              colorIndex: colorIndex,
+                              stime: Timestamp.fromDate(DateTime(
+                                  sDate.year,
+                                  sDate.month,
+                                  sDate.day,
+                                  sTime.hour,
+                                  sTime.minute)),
+                              etime: Timestamp.fromDate(DateTime(
+                                  sDate.year,
+                                  sDate.month,
+                                  sDate.day,
+                                  eTime.hour,
+                                  eTime.minute)));
 
                           FireService.getToken().then((String t) {
                             setState(() {
