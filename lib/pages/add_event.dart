@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:event_calendar/services/fcm_service.dart';
 import 'package:flutter/material.dart';
 
+import '../constants/constants.dart';
 import '../services/firebase_service.dart';
 
 class AddEvent extends StatefulWidget {
@@ -16,14 +17,16 @@ class _AddEventState extends State<AddEvent> {
   String token = '';
   String startTime = "hh:mm";
   String endTime = "hh:mm";
+  String decShowTime = "hh:mm";
   String startDate = "yyyy/mm/dd";
 
   TimeOfDay sTime = TimeOfDay.now();
   TimeOfDay eTime = TimeOfDay.now();
   DateTime sDate = DateTime.now();
+  TimeOfDay decTime = TimeOfDay.now();
 
   String dropdownValue = "15 minutes early";
-  int statusNo = 0;
+  String notifyTime = '';
   List<String> list = <String>[
     '15 minutes early',
     '01 hour early',
@@ -36,8 +39,12 @@ class _AddEventState extends State<AddEvent> {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
     return Scaffold(
-        appBar: AppBar(title: const Text("Event Calendar")),
+        appBar: AppBar(
+          title: const Text("Add Event"),
+          backgroundColor: primaryColor,
+        ),
         body: ListView(
           children: [
             Padding(
@@ -51,8 +58,10 @@ class _AddEventState extends State<AddEvent> {
                     const Text('Title'),
                     TextFormField(
                       controller: title,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
                         hintText: 'Enter event title',
                       ),
                       validator: (value) {
@@ -68,8 +77,10 @@ class _AddEventState extends State<AddEvent> {
                     const Text('Note'),
                     TextFormField(
                       controller: note,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
                         hintText: 'Enter your note',
                       ),
                       maxLines: 5,
@@ -97,7 +108,7 @@ class _AddEventState extends State<AddEvent> {
                             horizontal: 10, vertical: 10),
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
-                            border: Border.all(color: Colors.amber)),
+                            border: Border.all(color: Colors.grey)),
                         child: Row(
                           children: [
                             Text(startDate),
@@ -140,7 +151,7 @@ class _AddEventState extends State<AddEvent> {
                                     horizontal: 10, vertical: 10),
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(10),
-                                    border: Border.all(color: Colors.amber)),
+                                    border: Border.all(color: Colors.grey)),
                                 child: Row(
                                   children: [
                                     Text(startTime),
@@ -179,7 +190,7 @@ class _AddEventState extends State<AddEvent> {
                                     horizontal: 10, vertical: 10),
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(10),
-                                    border: Border.all(color: Colors.amber)),
+                                    border: Border.all(color: Colors.grey)),
                                 child: Row(
                                   children: [
                                     Text(endTime),
@@ -200,7 +211,7 @@ class _AddEventState extends State<AddEvent> {
                     const SizedBox(
                       height: 15,
                     ),
-                    const Text("Status"),
+                    const Text("Notify Time"),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -212,11 +223,35 @@ class _AddEventState extends State<AddEvent> {
                             setState(() {
                               dropdownValue = value!;
                               if (dropdownValue == "15 minutes early") {
-                                statusNo = 0;
+                                DateTime nTime = DateTime(
+                                        sDate.year,
+                                        sDate.month,
+                                        sDate.day,
+                                        sTime.hour,
+                                        sTime.minute)
+                                    .subtract(const Duration(minutes: 15));
+                                notifyTime =
+                                    '${nTime.year}-${nTime.month.toString().padLeft(2, '0')}-${nTime.day.toString().padLeft(2, '0')} ${nTime.hour.toString().padLeft(2, '0')}:${nTime.minute.toString().padLeft(2, '0')}:${nTime.second.toString().padLeft(2, '0')}';
                               } else if (dropdownValue == "01 hour early") {
-                                statusNo = 1;
+                                DateTime nTime = DateTime(
+                                        sDate.year,
+                                        sDate.month,
+                                        sDate.day,
+                                        sTime.hour,
+                                        sTime.minute)
+                                    .subtract(const Duration(hours: 1));
+                                notifyTime =
+                                    '${nTime.year}-${nTime.month.toString().padLeft(2, '0')}-${nTime.day.toString().padLeft(2, '0')} ${nTime.hour.toString().padLeft(2, '0')}:${nTime.minute.toString().padLeft(2, '0')}:${nTime.second.toString().padLeft(2, '0')}';
                               } else if (dropdownValue == "01 day early") {
-                                statusNo = 2;
+                                DateTime nTime = DateTime(
+                                        sDate.year,
+                                        sDate.month,
+                                        sDate.day,
+                                        sTime.hour,
+                                        sTime.minute)
+                                    .subtract(const Duration(days: 1));
+                                notifyTime =
+                                    '${nTime.year}-${nTime.month.toString().padLeft(2, '0')}-${nTime.day.toString().padLeft(2, '0')} ${nTime.hour.toString().padLeft(2, '0')}:${nTime.minute.toString().padLeft(2, '0')}:${nTime.second.toString().padLeft(2, '0')}';
                               }
                             });
                           },
@@ -232,16 +267,19 @@ class _AddEventState extends State<AddEvent> {
                           onTap: () async {
                             TimeOfDay? newTime = await showTimePicker(
                               context: context,
-                              initialTime: sTime,
+                              initialTime: decTime,
                             );
                             if (newTime == null) return;
                             setState(() {
-                              sTime = newTime;
+                              decTime = newTime;
                               String hour =
-                                  sTime.hour.toString().padLeft(2, "0");
+                                  decTime.hour.toString().padLeft(2, "0");
                               String minute =
-                                  sTime.minute.toString().padLeft(2, "0");
-                              startTime = "$hour:$minute";
+                                  decTime.minute.toString().padLeft(2, "0");
+                              decShowTime = "$hour:$minute";
+
+                              notifyTime =
+                                  '${sDate.year}-${sDate.month.toString().padLeft(2, '0')}-${sDate.day.toString().padLeft(2, '0')} $hour:$minute';
                             });
                           },
                           child: Container(
@@ -249,10 +287,10 @@ class _AddEventState extends State<AddEvent> {
                                 horizontal: 10, vertical: 10),
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10),
-                                border: Border.all(color: Colors.amber)),
+                                border: Border.all(color: Colors.grey)),
                             child: Row(
                               children: [
-                                Text(startTime),
+                                Text(decShowTime),
                                 const SizedBox(width: 5),
                                 const Icon(
                                   Icons.access_time_outlined,
@@ -261,6 +299,18 @@ class _AddEventState extends State<AddEvent> {
                             ),
                           ),
                         ),
+                      ],
+                    ),
+                    const SizedBox(height: 5),
+                    Row(
+                      children: [
+                        const Text('Notification Time : ',
+                            style: TextStyle(fontSize: 16)),
+                        notifyTime.isEmpty
+                            ? const Text('yyyy/mm/dd hh:mm:ss')
+                            : Text(notifyTime,
+                                style:
+                                    const TextStyle(color: Colors.redAccent)),
                       ],
                     ),
                     InkWell(
@@ -282,26 +332,41 @@ class _AddEventState extends State<AddEvent> {
                                   sDate.month,
                                   sDate.day,
                                   eTime.hour,
-                                  eTime.minute)));
+                                  eTime.minute)),
+                              date:
+                                  '${sDate.year}-${sDate.month.toString().padLeft(2, '0')}-${sDate.day.toString().padLeft(2, '0')}');
 
                           FireService.getToken().then((String t) {
                             setState(() {
                               token = t;
                             });
+                            FCMService.sendPushMessage(
+                                token: token,
+                                title: title.text,
+                                note: note.text,
+                                date: notifyTime);
                           });
-
-                          FCMService.sendPushMessage(
-                              token: token, title: 'title', note: 'note');
                         }
                       },
-                      child: Container(
-                        padding: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                            color: Colors.greenAccent,
-                            borderRadius: BorderRadius.circular(10)),
-                        child: const Text('Add Event',
-                            style: TextStyle(color: Colors.white)),
+                      child: Center(
+                        child: Container(
+                          margin: const EdgeInsets.only(top: 20.0),
+                          width: width * 0.75,
+                          height: 60.0,
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                              color: primaryColor,
+                              borderRadius: BorderRadius.circular(10)),
+                          child: const Center(
+                            child: Text('Add Event',
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 24)),
+                          ),
+                        ),
                       ),
+                    ),
+                    const SizedBox(
+                      height: 30,
                     ),
                   ],
                 ),

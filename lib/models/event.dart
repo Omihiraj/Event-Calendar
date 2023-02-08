@@ -2,30 +2,37 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Event {
   Event(
-      {required this.title,
+      {this.id,
+      required this.title,
       required this.note,
       required this.color,
       required this.stime,
-      required this.etime});
+      required this.etime,
+      required this.date});
+  String? id;
   String title;
   String note;
   int color;
   Timestamp stime;
   Timestamp etime;
+  String date;
 
   static Event fromJson(Map<String, dynamic> json) => Event(
-        title: json["title"],
-        note: json["note"],
-        color: json["color"],
-        stime: json["stime"],
-        etime: json["etime"],
-      );
+      id: json["id"],
+      title: json["title"],
+      note: json["note"],
+      color: json["color"],
+      stime: json["stime"],
+      etime: json["etime"],
+      date: json["date"]);
 
   Map<String, dynamic> toJson() => {
+        "id": id,
         "title": title,
         "note": note,
         "color": color,
         "stime": stime,
-        "etime": etime
+        "etime": etime,
+        "date": date,
       };
 }

@@ -87,11 +87,8 @@ class _MainPageState extends State<MainPage> {
           uiLocalNotificationDateInterpretation:
               UILocalNotificationDateInterpretation.absoluteTime,
           matchDateTimeComponents: DateTimeComponents.time);
-      //  await flutterLocalNotificationsPlugin.show(
-      //     0,
-      //     message.notification?.title,
-      //     message.notification?.body,
-      //     platformChannelSpecifics,
+      // await flutterLocalNotificationsPlugin.show(0, message.notification?.title,
+      //     message.notification?.body, platformChannelSpecifics,
       //     payload: message.data['body']);
     });
   }
@@ -135,7 +132,30 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Event Calendar")),
+      appBar: AppBar(
+        backgroundColor: primaryColor,
+        title: SizedBox(
+            child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: const [
+            Text(
+              "Event Calendar",
+              style: TextStyle(
+                  fontSize: 30,
+                  letterSpacing: 4.0,
+                  fontWeight: FontWeight.bold),
+            ),
+          ],
+        )),
+        centerTitle: true,
+        bottom: const PreferredSize(
+            child: SizedBox(), preferredSize: Size.fromHeight(10)),
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(30.0),
+              bottomRight: Radius.circular(30)),
+        ),
+      ),
       resizeToAvoidBottomInset: false,
       body: screens[index],
       bottomNavigationBar: CustomNavBar(
@@ -148,7 +168,7 @@ class _MainPageState extends State<MainPage> {
               MaterialPageRoute(builder: (context) => const AddEvent()));
         },
         backgroundColor: primaryColor,
-        splashColor: secondaryColor,
+        splashColor: Colors.white,
         child: const Icon(Icons.add),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,

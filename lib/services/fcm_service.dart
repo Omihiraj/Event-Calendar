@@ -9,7 +9,7 @@ class FCMService {
     required String token,
     required String title,
     required String note,
-    Timestamp? date,
+    required String date,
   }) async {
     try {
       await http.post(Uri.parse('https://fcm.googleapis.com/fcm/send'),
@@ -26,7 +26,7 @@ class FCMService {
               'body': note,
               'title': title,
               "isScheduled": true,
-              "scheduledTime": "2023-02-04 23:21:00"
+              "scheduledTime": date
             },
             'notification': <String, dynamic>{
               'title': title,

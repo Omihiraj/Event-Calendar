@@ -61,9 +61,9 @@ class DateCalendar {
 
       i++;
     }
-    for (int p = 0; p < holidayType.length; p++) {
-      print('$p - ${holidayType[p]}');
-    }
+    // for (int p = 0; p < holidayType.length; p++) {
+    //   print('$p - ${holidayType[p]}');
+    // }
     return [day, dayName, monthName, monthNo, holidayType, holidayName];
   }
 

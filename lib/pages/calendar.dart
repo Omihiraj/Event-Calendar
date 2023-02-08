@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:event_calendar/services/firebase_service.dart';
+
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -20,6 +20,7 @@ class _CalendarState extends State<Calendar> {
   @override
   void initState() {
     super.initState();
+    super.initState();
 
     setList();
   }
@@ -31,24 +32,23 @@ class _CalendarState extends State<Calendar> {
           note: 'Super Note',
           stime: Timestamp.fromDate(DateTime(2023, 02, 08, 11, 30)),
           etime: Timestamp.fromDate(DateTime(2023, 02, 08, 11, 30)),
-          color: 2)
+          color: 2,
+          date: '')
     ];
     FirebaseFirestore.instance
         .collection('events')
         .get()
         .then((QuerySnapshot querySnapshot) {
       for (var doc in querySnapshot.docs) {
-        selectedEvents.putIfAbsent(
-            doc["stime"].toDate(),
-            () => [
-                  Event(
-                      title: doc["title"],
-                      note: doc["note"],
-                      stime: doc["stime"],
-                      etime: doc["etime"],
-                      color: doc["color"])
-                ]);
+        selectedEvents[doc["stime"].toDate()]!.add(Event(
+            title: doc["title"],
+            note: doc["note"],
+            stime: doc["stime"],
+            etime: doc["etime"],
+            color: doc["color"],
+            date: doc["date"]));
       }
+      // querySnapshot.docs.map((item) => )
     });
   }
 

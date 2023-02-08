@@ -16,6 +16,7 @@ void main() async {
   );
   await FirebaseMessaging.instance.getInitialMessage();
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
   runApp(const MyApp());
 }
 
@@ -30,6 +31,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: const MainPage(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
