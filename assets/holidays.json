@@ -1,16 +1,137 @@
+
 {
     "holidays":[
         {
-            "date":"2023-02-07",
+            "date":"2023-01-06",
             "type":1,
             "holiday":"Duruthu Poya"
         },
-    
         {
-            "date":"2023-02-10",
-            "type":2,
-            "holiday":"Bank Holiday"
+            "date":"2023-01-15",
+            "type":4,
+            "holiday":"Tamil Thai Pongal"
+        },
+        {
+            "date":"2023-02-04",
+            "type":4,
+            "holiday":"National Day"
+        },
+        {
+            "date":"2023-02-05",
+            "type":1,
+            "holiday":"Navam Poya"
+        },
+        {
+            "date":"2023-02-18",
+            "type":4,
+            "holiday":"Maha Shiva Rathri"
+        },
+        {
+            "date":"2023-03-06",
+            "type":1,
+            "holiday":"Madin Poya"
+        },
+        {
+            "date":"2023-04-05",
+            "type":1,
+            "holiday":"Bak Poya"
+        },
+        {
+            "date":"2023-04-07",
+            "type":4,
+            "holiday":"Good Friday"
+        },
+        {
+            "date":"2023-04-13",
+            "type":4,
+            "holiday":"Old Sinhala Tamil Year"
+        },
+        {
+            "date":"2023-04-14",
+            "type":4,
+            "holiday":"Sinhala Tamil New Year"
+        },
+        {
+            "date":"2023-04-22",
+            "type":4,
+            "holiday":"Id Il-Fitr"
+        },
+        {
+            "date":"2023-05-01",
+            "type":4,
+            "holiday":"May Day"
+        },
+        {
+            "date":"2023-05-05",
+            "type":1,
+            "holiday":"Vesak Poya"
+        },
+        {
+            "date":"2023-05-06",
+            "type":1,
+            "holiday":"Day following Vesak"
+        },
+        {
+            "date":"2023-06-03",
+            "type":1,
+            "holiday":"Poson Poya"
+        },
+        {
+            "date":"2023-06-29",
+            "type":4,
+            "holiday":"Id Ul-Alha"
+        },
+        {
+            "date":"2023-07-03",
+            "type":1,
+            "holiday":"Adhi Esala Poya"
+        },
+        {
+            "date":"2023-08-01",
+            "type":1,
+            "holiday":"Esala Poya"
+        },
+        {
+            "date":"2023-08-30",
+            "type":1,
+            "holiday":"Nikini Poya"
+        },
+        {
+            "date":"2023-09-28",
+            "type":4,
+            "holiday":"Milad un-Nabi"
+        },
+        {
+            "date":"2023-09-29",
+            "type":1,
+            "holiday":"Binara Poya"
+        },
+        {
+            "date":"2023-10-28",
+            "type":1,
+            "holiday":"Vap Poya"
+        },
+        {
+            "date":"2023-11-12",
+            "type":4,
+            "holiday":"Deepavali"
+        },
+        {
+            "date":"2023-11-26",
+            "type":1,
+            "holiday":"Ill Poya"
+        },
+        {
+            "date":"2023-12-25",
+            "type":4,
+            "holiday":"Christmas Day"
+        },
+        {
+            "date":"2023-12-26",
+            "type":1,
+            "holiday":"Unduvap Poya"
         }
+        
        
     ]
 }

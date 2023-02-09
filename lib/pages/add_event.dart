@@ -27,6 +27,7 @@ class _AddEventState extends State<AddEvent> {
 
   String dropdownValue = "15 minutes early";
   String notifyTime = '';
+  DateTime notifyDTime = DateTime.now();
   List<String> list = <String>[
     '15 minutes early',
     '01 hour early',
@@ -36,7 +37,7 @@ class _AddEventState extends State<AddEvent> {
   TextEditingController note = TextEditingController();
 
   int colorIndex = 0;
-
+  bool errorOcuur = false;
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -77,6 +78,12 @@ class _AddEventState extends State<AddEvent> {
                     const Text('Note'),
                     TextFormField(
                       controller: note,
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Please enter Note';
+                        }
+                        return null;
+                      },
                       decoration: InputDecoration(
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10.0),
@@ -207,6 +214,10 @@ class _AddEventState extends State<AddEvent> {
                     const SizedBox(
                       height: 15,
                     ),
+                    const Text("Event Color"),
+                    const SizedBox(
+                      height: 5,
+                    ),
                     colorSelecter(),
                     const SizedBox(
                       height: 15,
@@ -232,6 +243,8 @@ class _AddEventState extends State<AddEvent> {
                                     .subtract(const Duration(minutes: 15));
                                 notifyTime =
                                     '${nTime.year}-${nTime.month.toString().padLeft(2, '0')}-${nTime.day.toString().padLeft(2, '0')} ${nTime.hour.toString().padLeft(2, '0')}:${nTime.minute.toString().padLeft(2, '0')}:${nTime.second.toString().padLeft(2, '0')}';
+                                notifyDTime = DateTime(nTime.year, nTime.month,
+                                    nTime.day, nTime.hour, nTime.minute);
                               } else if (dropdownValue == "01 hour early") {
                                 DateTime nTime = DateTime(
                                         sDate.year,
@@ -242,6 +255,8 @@ class _AddEventState extends State<AddEvent> {
                                     .subtract(const Duration(hours: 1));
                                 notifyTime =
                                     '${nTime.year}-${nTime.month.toString().padLeft(2, '0')}-${nTime.day.toString().padLeft(2, '0')} ${nTime.hour.toString().padLeft(2, '0')}:${nTime.minute.toString().padLeft(2, '0')}:${nTime.second.toString().padLeft(2, '0')}';
+                                notifyDTime = DateTime(nTime.year, nTime.month,
+                                    nTime.day, nTime.hour, nTime.minute);
                               } else if (dropdownValue == "01 day early") {
                                 DateTime nTime = DateTime(
                                         sDate.year,
@@ -252,6 +267,8 @@ class _AddEventState extends State<AddEvent> {
                                     .subtract(const Duration(days: 1));
                                 notifyTime =
                                     '${nTime.year}-${nTime.month.toString().padLeft(2, '0')}-${nTime.day.toString().padLeft(2, '0')} ${nTime.hour.toString().padLeft(2, '0')}:${nTime.minute.toString().padLeft(2, '0')}:${nTime.second.toString().padLeft(2, '0')}';
+                                notifyDTime = DateTime(nTime.year, nTime.month,
+                                    nTime.day, nTime.hour, nTime.minute);
                               }
                             });
                           },
@@ -280,6 +297,8 @@ class _AddEventState extends State<AddEvent> {
 
                               notifyTime =
                                   '${sDate.year}-${sDate.month.toString().padLeft(2, '0')}-${sDate.day.toString().padLeft(2, '0')} $hour:$minute';
+                              notifyDTime = DateTime(sDate.year, sDate.month,
+                                  sDate.day, decTime.hour, decTime.minute);
                             });
                           },
                           child: Container(
@@ -316,36 +335,56 @@ class _AddEventState extends State<AddEvent> {
                     InkWell(
                       onTap: () {
                         if (_formKey.currentState!.validate()) {
-                          FireService.addEvent(
-                              context: context,
-                              title: title.text,
-                              note: note.text,
-                              colorIndex: colorIndex,
-                              stime: Timestamp.fromDate(DateTime(
-                                  sDate.year,
-                                  sDate.month,
-                                  sDate.day,
-                                  sTime.hour,
-                                  sTime.minute)),
-                              etime: Timestamp.fromDate(DateTime(
-                                  sDate.year,
-                                  sDate.month,
-                                  sDate.day,
-                                  eTime.hour,
-                                  eTime.minute)),
-                              date:
-                                  '${sDate.year}-${sDate.month.toString().padLeft(2, '0')}-${sDate.day.toString().padLeft(2, '0')}');
-
-                          FireService.getToken().then((String t) {
-                            setState(() {
-                              token = t;
-                            });
-                            FCMService.sendPushMessage(
-                                token: token,
+                          if (DateTime(sDate.year, sDate.month, sDate.day,
+                                      sTime.hour, sTime.minute)
+                                  .compareTo(DateTime(sDate.year, sDate.month,
+                                      sDate.day, eTime.hour, eTime.minute)) >
+                              0) {
+                            print("Start time must before End Time");
+                            showPopup(
+                                "Start time must before End Time", context);
+                          } else if (DateTime.now().compareTo(DateTime(
+                                  notifyDTime.year,
+                                  notifyDTime.month,
+                                  notifyDTime.day,
+                                  notifyDTime.hour,
+                                  notifyDTime.minute)) >
+                              0) {
+                            showPopup(
+                                "Please Setup Notify time after the current time",
+                                context);
+                          } else {
+                            FireService.addEvent(
+                                context: context,
                                 title: title.text,
                                 note: note.text,
-                                date: notifyTime);
-                          });
+                                colorIndex: colorIndex,
+                                stime: Timestamp.fromDate(DateTime(
+                                    sDate.year,
+                                    sDate.month,
+                                    sDate.day,
+                                    sTime.hour,
+                                    sTime.minute)),
+                                etime: Timestamp.fromDate(DateTime(
+                                    sDate.year,
+                                    sDate.month,
+                                    sDate.day,
+                                    eTime.hour,
+                                    eTime.minute)),
+                                date:
+                                    '${sDate.year}-${sDate.month.toString().padLeft(2, '0')}-${sDate.day.toString().padLeft(2, '0')}');
+
+                            FireService.getToken().then((String t) {
+                              setState(() {
+                                token = t;
+                              });
+                              FCMService.sendPushMessage(
+                                  token: token,
+                                  title: title.text,
+                                  note: note.text,
+                                  date: notifyTime);
+                            });
+                          }
                         }
                       },
                       child: Center(
@@ -374,6 +413,49 @@ class _AddEventState extends State<AddEvent> {
             ),
           ],
         ));
+  }
+
+  Future showPopup(String error, context) {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+              content: SizedBox(
+            height: 100,
+            child: Column(
+              children: [
+                Center(
+                  child: Text(
+                    error,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      backgroundColor: Colors.redAccent,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                const SizedBox(height: 30),
+                Align(
+                  alignment: Alignment.bottomRight,
+                  child: InkWell(
+                      onTap: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 2),
+                          decoration: BoxDecoration(
+                              color: Colors.blueAccent,
+                              borderRadius: BorderRadius.circular(5)),
+                          child: const Text(
+                            "Ok",
+                            style: TextStyle(color: Colors.white),
+                          ))),
+                )
+              ],
+            ),
+          ));
+        });
   }
 
   Widget colorSelecter() {
